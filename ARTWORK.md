@@ -1,6 +1,6 @@
 # Artwork
 
-All art was generated using the built-in ImageGen tool for Iron Contract. The web assets are in `dist/assets/`. `crater.webp`, `canyon.webp`, and `relay.webp` are the three panels of the Mars arena atlas. The infantry and weapon assets retain transparency.
+All art was generated using the built-in ImageGen tool for Fire Heat. The web assets are in `dist/assets/`. `crater.webp`, `canyon.webp`, and `relay.webp` are the three panels of the Mars arena atlas. The infantry and weapon assets retain transparency.
 
 ## Cover
 

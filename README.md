@@ -1,6 +1,6 @@
-# Iron Contract: Mars Tactical Operations
+# Fire Heat: Mars Tactical Operations
 
-Iron Contract is a browser shooter set on Mars. Clear three missions against blue-uniformed enemy infantry and outrank two simulated rivals by earning the most in-game cash. Elimination payouts, precision shots, streaks, and contract bonuses contribute to the total.
+Fire Heat is a browser shooter set on Mars. Clear three missions against blue-uniformed enemy infantry and outrank two simulated rivals by earning the most in-game cash. Elimination payouts, precision shots, streaks, and contract bonuses contribute to the total.
 
 - **Fire:** click an enemy. Hold to fire automatically. With the arena focused, use arrow keys to aim and Space to shoot.
 - **Move:** WASD to strafe and change depth.
