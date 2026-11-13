@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f110f">
+<meta name="description" content="Iron Contract — a tactical arcade shooter with three missions and a cash leaderboard.">
+<title>Iron Contract — Tactical Operations</title>
+<link rel="stylesheet" href="style.css">
+<script src="engine.js" defer></script>
+<script src="game.js" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#" id="home" aria-label="Iron Contract headquarters">
+      <svg viewBox="0 0 42 44" aria-hidden="true"><path d="M21 1 40 10 40 27 21 42 2 27 2 10Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 14 21 24 32 14v7L21 31 10 21Z" fill="currentColor"/><path d="m15 11 6 5 6-5v5l-6 5-6-5Z" fill="currentColor"/></svg>
+      <span>IRON<span class="brand-accent">CONTRACT</span><small>MARS TACTICAL OPERATIONS</small></span>
+    </a>
+    <nav aria-label="Main navigation">
+      <button class="nav-btn selected" id="nav-ops">Operations</button>
+      <button class="nav-btn" id="nav-rank">Records</button>
+    </nav>
+    <div class="top-actions"><span class="online"><i></i> SYSTEM ONLINE</span><button class="sound icon-btn" id="sound" aria-label="Mute sound" title="Mute sound"></button></div>
+  </div>
+</header>
+<main class="frame">
+  <section id="lobby">
+    <div class="section-index"><i></i> MARS COMMAND <span>//</span> SEASON 01</div>
+    <div class="command-grid">
+      <article class="hero" id="hero">
+        <div class="hero-noise"></div>
+        <div class="hero-meta"><span><i></i> CAMPAIGN ACTIVE</span><span>OP FILE // IC-01</span></div>
+        <div class="hero-body">
+          <div class="eyebrow">MARS FRONTIER CONTRACT</div>
+          <h1>IRON<br><em>CONTRACT</em></h1>
+          <p>Three Martian combat zones. One payout table.<br>Take down enemy soldiers and out-earn your rivals.</p>
+          <button class="action primary" id="deploy"><span class="play-icon">▶</span><span id="deploy-label">DEPLOY TO MISSION</span><span class="arrow">↗</span></button>
+        </div>
+        <div class="hero-footer"><span>FIELD UNIT // 07</span><span>CONTRACT SERIES <b>01–03</b></span></div>
+      </article>
+      <aside class="command-side">
+        <article class="panel status">
+          <div class="panel-label"><span>▦</span> OPERATOR PROFILE <span class="panel-index">01</span></div>
+          <div class="operator"><div class="operator-icon">✦</div><div><strong>GHOST-07</strong><small>INDEPENDENT CONTRACTOR</small></div><span class="you">YOU</span></div>
+          <div class="bank"><div><small>BEST CAMPAIGN TOTAL</small><strong id="bank-total">$0</strong></div><span>$</span></div>
+          <div class="progress-caption"><span>MISSIONS CLEARED</span><b id="clear-count">0 / 3</b></div><div class="segments" id="segments"><i></i><i></i><i></i></div>
+        </article>
+        <article class="panel intel">
+          <div class="panel-label"><span>◎</span> RULES OF ENGAGEMENT <span class="panel-index">02</span></div>
+          <p>Earn cash for eliminations, precision shots, and streaks. The highest payout on each mission wins.</p>
+          <div class="rule-foot"><span>▸</span> SOLO <i></i> 2 AI RIVALS <i></i> IN-GAME CASH</div>
+        </article>
+      </aside>
+    </div>
+    <div class="missions-heading"><div><div class="eyebrow">01 / FIELD OPERATIONS</div><h2>Mission Select</h2></div><span>03 CONTRACTS <i></i> PROGRESS SAVED ON THIS DEVICE</span></div>
+    <div class="mission-grid" id="mission-grid"></div>
+  </section>
+
+  <section id="game" hidden>
+    <div class="game-heading">
+      <div><button class="back" id="back">← HQ</button><span class="eyebrow" id="game-id">MISSION / 01</span><h2 id="game-name">Crater Breach</h2></div>
+      <button class="action secondary small" id="pause">Ⅱ PAUSE</button>
+    </div>
+    <div class="ops-grid">
+      <div class="battle-wrap">
+        <div class="battle" id="battle">
+          <canvas id="arena" width="1120" height="630" tabindex="0" aria-label="Combat area. Aim and click soldiers to shoot. R reloads, C toggles cover."></canvas>
+          <div class="hud">
+            <div class="hud-top"><div><span>OBJECTIVE</span><b id="hud-target">0 / 8</b></div><div class="hud-time"><span>REMAINING</span><b id="hud-time">0:55</b></div><div class="hud-pay"><span>FIELD PAYOUT</span><b id="hud-cash">$0</b></div></div>
+            <div class="hud-bottom"><div><span>ARMOR</span><b id="hud-hp">100</b><i class="health-bar"><i id="hp-bar"></i></i></div><div class="hud-ammo"><span id="ammo-label">CARBINE</span><b><strong id="hud-ammo">08</strong><small> / ∞</small></b></div></div>
+            <div class="toast" id="toast"></div>
+          </div>
+          <div class="arena-overlay" id="arena-overlay" hidden></div>
+        </div>
+        <div class="controls"><span><kbd>CLICK</kbd> Fire</span><button id="reload"><kbd>R</kbd> Reload</button><button id="cover"><kbd>C</kbd> Cover</button><span><kbd>ESC</kbd> Pause</span></div>
+      </div>
+      <aside class="ops-side">
+        <article class="panel ranking">
+          <div class="panel-label"><span>▥</span> LIVE CASH LEADERBOARD <span class="panel-index">LIVE</span></div>
+          <div id="live-ranks"></div>
+          <p>Highest mission payout wins. Rivals are simulated AI contractors.</p>
+        </article>
+        <article class="panel intel briefing">
+          <div class="panel-label"><span>◎</span> MISSION BRIEF</div>
+          <p id="brief-text"></p>
+          <dl><div><dt>Elimination</dt><dd id="base-pay"></dd></div><div><dt>Precision bonus</dt><dd>+50%</dd></div><div><dt>Clear contract</dt><dd id="clear-pay"></dd></div></dl>
+        </article>
+      </aside>
+    </div>
+  </section>
+  <footer><span>IRON CONTRACT <i></i> FICTIONAL COMBAT SIMULATION</span><span>BUILD 01.00 <b>▰▰▰</b></span></footer>
+</main>
+<dialog id="records">
+  <div class="dialog-head"><div><div class="eyebrow">OPERATOR DOSSIER</div><h2>Mission Records</h2></div><button class="icon-btn" id="close-records" aria-label="Close records">✕</button></div>
+  <div id="record-list"></div>
+  <p class="dialog-note">Best mission payouts are saved locally on this device.</p>
+</dialog>
+</body>
+</html>
