@@ -9,10 +9,16 @@ records=missions.map((_,i)=>({best:Math.max(0,Number(records[i]?.best)||0),clear
 let run=null,paused=false,muted=false,time=0,lastHUD=-1,lastRanks='',coverTween=0,hitBuzzAt=-10;
 let aim={x:W/2,y:H/2,show:false},lastAnimation=0;
 const keys=new Set();
+let touchMove=null,touchAim=null,touchFire=null;
 let trigger=false,aimToggle=false,rightAim=false,shiftAim=false;
 let camera={x:0,y:0,z:1.18,ads:0,walk:0};
 const aiming=()=>aimToggle||rightAim||shiftAim;
-function releaseInputs(){keys.clear();trigger=false;rightAim=false;shiftAim=false}
+function releaseInputs(){
+ keys.clear();trigger=false;rightAim=false;shiftAim=false;
+ touchMove=touchAim=touchFire=null;
+ $('touch-move').classList.remove('active');$('touch-shoot').classList.remove('active');
+ $('touch-knob').style.transform='';
+}
 function syncSights(){
  const b=$('sights');b.classList.toggle('active',aiming());b.setAttribute('aria-pressed',String(aiming()));
 }
@@ -89,6 +95,9 @@ function updateHUD(){
  $('toast').textContent=s.clock<s.noticeUntil?s.notice:'';
  $('cover').classList.toggle('active',s.cover);
  $('cover').setAttribute('aria-pressed',String(s.cover));
+ $('touch-cover').setAttribute('aria-pressed',String(s.cover));
+ $('touch-reload').textContent=s.reloadEnd?'Reloading…':'Reload';
+ $('touch-reload').disabled=!!s.reloadEnd;
  const ranking=E.ranks(s);
  const key=ranking.map(r=>r.name+r.cash).join(':');
  if(key!==lastRanks){
@@ -126,8 +135,13 @@ function end(){
 function position(e){
  const r=canvas.getBoundingClientRect();return {x:clamp((e.clientX-r.left)*W/r.width,0,W),y:clamp((e.clientY-r.top)*H/r.height,0,H),show:true};
 }
-canvas.addEventListener('pointermove',e=>aim=position(e));
-canvas.addEventListener('pointerleave',()=>{aim.show=false});
+function enableTouch(){ $('game').classList.add('using-touch') }
+function touchPointer(e){return e.pointerType==='touch'||e.pointerType==='pen'}
+canvas.addEventListener('pointermove',e=>{
+ if(touchPointer(e)&&e.pointerId!==touchAim)return;
+ aim=position(e);
+});
+canvas.addEventListener('pointerleave',e=>{if(!touchPointer(e))aim.show=false});
 function shoot(){
  if(!run||paused||run.result)return;
  audioInit();
@@ -141,17 +155,48 @@ function shoot(){
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
 canvas.addEventListener('pointerdown',e=>{
  if(!run||paused||run.result)return;
+ if(touchPointer(e)){
+   if(touchAim!==null)return;
+   e.preventDefault();enableTouch();touchAim=e.pointerId;aim=position(e);
+   canvas.setPointerCapture(e.pointerId);return;
+ }
  if(e.button===2){e.preventDefault();rightAim=true;aim=position(e);syncSights();return}
  if(e.button!==0)return;
  e.preventDefault();canvas.focus({preventScroll:true});aim=position(e);trigger=true;shoot();
- if(e.pointerType!=='mouse')canvas.setPointerCapture(e.pointerId);
 });
 function pointerUp(e){
- if(e.button===2)rightAim=false;else if(e.button===0||e.type==='pointercancel')trigger=false;
+ if(e.pointerId===touchAim)touchAim=null;
+ if(touchMove?.id===e.pointerId){touchMove=null;$('touch-knob').style.transform='';$('touch-move').classList.remove('active')}
+ if(e.pointerId===touchFire){touchFire=null;$('touch-shoot').classList.remove('active')}
+ if(!touchPointer(e)){
+   if(e.button===2)rightAim=false;else if(e.button===0||e.type==='pointercancel')trigger=false;
+ }
  syncSights();
 }
 window.addEventListener('pointerup',pointerUp);
 window.addEventListener('pointercancel',pointerUp);
+for(const el of [canvas,$('touch-move'),$('touch-shoot')])el.addEventListener('lostpointercapture',pointerUp);
+function moveStick(e){
+ if(touchMove?.id!==e.pointerId)return;
+ const rect=$('touch-move').getBoundingClientRect(),r=rect.width*.34;
+ const x=(e.clientX-rect.left-rect.width/2)/r, y=(e.clientY-rect.top-rect.height/2)/r, mag=Math.hypot(x,y);
+ touchMove.x=mag<.12?0:x/Math.max(1,mag);touchMove.y=mag<.12?0:y/Math.max(1,mag);
+ $('touch-knob').style.transform='translate('+touchMove.x*r+'px,'+touchMove.y*r+'px)';
+}
+$('touch-move').addEventListener('pointerdown',e=>{
+ if(!run||run.result||paused||touchMove||e.button!==0)return;
+ e.preventDefault();enableTouch();touchMove={id:e.pointerId,x:0,y:0};moveStick(e);
+ e.currentTarget.classList.add('active');e.currentTarget.setPointerCapture(e.pointerId);
+});
+$('touch-move').addEventListener('pointermove',moveStick);
+$('touch-shoot').addEventListener('pointerdown',e=>{
+ if(!run||run.result||paused||touchFire!==null||e.button!==0)return;
+ e.preventDefault();touchFire=e.pointerId;e.currentTarget.classList.add('active');
+ e.currentTarget.setPointerCapture(e.pointerId);shoot();
+});
+$('touch-shoot').addEventListener('click',e=>{if(e.detail===0)shoot()});
+$('touch-reload').addEventListener('click',()=>doReload());
+$('touch-cover').addEventListener('click',()=>doCover());
 window.addEventListener('blur',()=>{releaseInputs();syncSights()});
 function doReload(){if(run&&!run.result&&!paused&&E.reload(run)){beep(245,.09,'triangle',.105);updateHUD()}}
 function doCover(){if(run&&!run.result&&!paused){E.cover(run);beep(85,.08,'triangle',.08);updateHUD()}}
@@ -348,7 +393,8 @@ function paint(){
  }
 }
 function moveCamera(s,dt){
- const dx=Number(keys.has('a'))-Number(keys.has('d')),dy=Number(keys.has('w'))-Number(keys.has('s'));
+ const dx=clamp(Number(keys.has('a'))-Number(keys.has('d'))-(touchMove?.x||0),-1,1);
+ const dy=clamp(Number(keys.has('w'))-Number(keys.has('s'))-(touchMove?.y||0),-1,1);
  const move=(!s.cover&&(dx||dy))?1:0;
  const ads=(!s.cover&&aiming())?1:0;
  const speed=ads?.49:1;
@@ -365,7 +411,7 @@ function frame(now,fromAnimation=true){
    moveCamera(run,dt);E.tick(run,dt);coverTween+=((run.cover?1:0)-coverTween)*Math.min(1,dt*17);
    if(run.damageAt!==hitBuzzAt&&run.damageAt>=0){hitBuzzAt=run.damageAt;beep(95,.12,'sine',.18)}
    if(run.result){paint();end()}
-   else{if(trigger&&run.clock>=run.cool&&!run.cover&&!run.reloadEnd){if(run.ammo)shoot();else{doReload();trigger=false}}paint();if(now-lastHUD>95){lastHUD=now;updateHUD()}}
+   else{if((trigger||touchFire!==null)&&run.clock>=run.cool&&!run.cover&&!run.reloadEnd){if(run.ammo)shoot();else{doReload();trigger=false}}paint();if(now-lastHUD>95){lastHUD=now;updateHUD()}}
  }
  time=Math.max(time,now);
 }
