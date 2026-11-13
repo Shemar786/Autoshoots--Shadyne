@@ -2,10 +2,14 @@
 
 Iron Contract is a browser shooter set on Mars. Clear three missions against blue-uniformed enemy infantry and outrank two simulated rivals by earning the most in-game cash. Elimination payouts, precision shots, streaks, and contract bonuses contribute to the total.
 
-- **Fire:** click or tap the enemy. With the arena focused, use arrow keys to aim and Space to shoot.
+- **Fire:** click or tap an enemy. Hold to fire automatically. With the arena focused, use arrow keys to aim and Space to shoot.
+- **Move:** WASD to strafe and change depth.
+- **Aim down sights:** hold Shift or right click; on touch, tap Aim.
 - **Reload:** R or the Reload button.
 - **Cover:** C or the Cover button. You can reload while protected.
 - **Pause:** Escape or the Pause button.
+
+Soldiers flinch, throw off sparks, and keep moving after a hit. Their armor takes multiple hits before they go down.
 
 Mission records and unlocks are stored on this device. No backend or dependencies are required to run the game. Open `dist/index.html` directly or serve the `dist` directory:
 

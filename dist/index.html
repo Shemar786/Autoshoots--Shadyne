@@ -65,15 +65,15 @@
     <div class="ops-grid">
       <div class="battle-wrap">
         <div class="battle" id="battle">
-          <canvas id="arena" width="1120" height="630" tabindex="0" aria-label="Combat area. Aim and click soldiers to shoot. R reloads, C toggles cover."></canvas>
+          <canvas id="arena" width="1120" height="630" tabindex="0" aria-label="Combat area. Click or hold to fire. WASD moves, Shift aims, R reloads, and C toggles cover."></canvas>
           <div class="hud">
             <div class="hud-top"><div><span>OBJECTIVE</span><b id="hud-target">0 / 8</b></div><div class="hud-time"><span>REMAINING</span><b id="hud-time">0:55</b></div><div class="hud-pay"><span>FIELD PAYOUT</span><b id="hud-cash">$0</b></div></div>
-            <div class="hud-bottom"><div><span>ARMOR</span><b id="hud-hp">100</b><i class="health-bar"><i id="hp-bar"></i></i></div><div class="hud-ammo"><span id="ammo-label">CARBINE</span><b><strong id="hud-ammo">08</strong><small> / ∞</small></b></div></div>
+            <div class="hud-bottom"><div><span>ARMOR</span><b id="hud-hp">100</b><i class="health-bar"><i id="hp-bar"></i></i></div><div class="hud-ammo"><span id="ammo-label">CARBINE</span><b><strong id="hud-ammo">20</strong><small> / ∞</small></b></div></div>
             <div class="toast" id="toast"></div>
           </div>
           <div class="arena-overlay" id="arena-overlay" hidden></div>
         </div>
-        <div class="controls"><span><kbd>CLICK</kbd> Fire</span><button id="reload"><kbd>R</kbd> Reload</button><button id="cover"><kbd>C</kbd> Cover</button><span><kbd>ESC</kbd> Pause</span></div>
+        <div class="controls"><span><kbd>WASD</kbd> Move</span><span><kbd>HOLD CLICK</kbd> Fire</span><button id="sights" aria-pressed="false"><kbd>SHIFT</kbd> Aim</button><button id="reload"><kbd>R</kbd> Reload</button><button id="cover"><kbd>C</kbd> Cover</button><span><kbd>ESC</kbd> Pause</span></div>
       </div>
       <aside class="ops-side">
         <article class="panel ranking">
@@ -89,7 +89,7 @@
       </aside>
     </div>
   </section>
-  <footer><span>IRON CONTRACT <i></i> FICTIONAL COMBAT SIMULATION</span><span>BUILD 01.00 <b>▰▰▰</b></span></footer>
+  <footer><span>IRON CONTRACT <i></i> FICTIONAL COMBAT SIMULATION</span><span>BUILD 01.10 <b>▰▰▰</b></span></footer>
 </main>
 <dialog id="records">
   <div class="dialog-head"><div><div class="eyebrow">OPERATOR DOSSIER</div><h2>Mission Records</h2></div><button class="icon-btn" id="close-records" aria-label="Close records">✕</button></div>
