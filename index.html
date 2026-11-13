@@ -6,9 +6,9 @@
 <meta name="theme-color" content="#0f110f">
 <meta name="description" content="Iron Contract — a tactical arcade shooter with three missions and a cash leaderboard.">
 <title>Iron Contract — Tactical Operations</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=112">
 <script src="engine.js" defer></script>
-<script src="game.js" defer></script>
+<script src="game.js?v=112" defer></script>
 </head>
 <body>
 <header class="topbar">
@@ -65,7 +65,7 @@
     <div class="ops-grid">
       <div class="battle-wrap">
         <div class="battle" id="battle">
-          <canvas id="arena" width="1120" height="630" tabindex="0" aria-label="Combat area. Click or hold to fire. WASD moves, Shift aims, R reloads, and C toggles cover."></canvas>
+          <canvas id="arena" width="1120" height="630" tabindex="0" aria-label="Combat area. On touch, drag to aim. On desktop, click to fire, use WASD to move, and R to reload."></canvas>
           <div class="hud">
             <div class="hud-top"><div><span>OBJECTIVE</span><b id="hud-target">0 / 8</b></div><div class="hud-time"><span>REMAINING</span><b id="hud-time">0:55</b></div><div class="hud-pay"><span>FIELD PAYOUT</span><b id="hud-cash">$0</b></div></div>
             <div class="hud-bottom"><div><span>ARMOR</span><b id="hud-hp">100</b><i class="health-bar"><i id="hp-bar"></i></i></div><div class="hud-ammo"><span id="ammo-label">CARBINE</span><b><strong id="hud-ammo">20</strong><small> / ∞</small></b></div></div>
@@ -74,6 +74,20 @@
           <div class="arena-overlay" id="arena-overlay" hidden></div>
         </div>
         <div class="controls"><span><kbd>WASD</kbd> Move</span><span><kbd>HOLD CLICK</kbd> Fire</span><button id="sights" aria-pressed="false"><kbd>SHIFT</kbd> Aim</button><button id="reload"><kbd>R</kbd> Reload</button><button id="cover"><kbd>C</kbd> Cover</button><span><kbd>ESC</kbd> Pause</span></div>
+        <div class="touch-controls" role="group" aria-label="Touch combat controls">
+          <div class="move-pad">
+            <div class="joystick" id="touch-move" aria-hidden="true"><span class="joystick-knob" id="touch-knob"></span></div>
+            <span>Move</span>
+          </div>
+          <div class="touch-actions">
+            <span class="touch-hint">Drag the battlefield to aim</span>
+            <div class="touch-buttons">
+              <button class="action secondary" id="touch-cover" aria-pressed="false">Cover</button>
+              <button class="action secondary" id="touch-reload">Reload</button>
+              <button class="action primary" id="touch-shoot">Shoot</button>
+            </div>
+          </div>
+        </div>
       </div>
       <aside class="ops-side">
         <article class="panel ranking">
@@ -89,7 +103,7 @@
       </aside>
     </div>
   </section>
-  <footer><span>IRON CONTRACT <i></i> FICTIONAL COMBAT SIMULATION</span><span>BUILD 01.10 <b>▰▰▰</b></span></footer>
+  <footer><span>IRON CONTRACT <i></i> FICTIONAL COMBAT SIMULATION</span><span>BUILD 01.12 <b>▰▰▰</b></span></footer>
 </main>
 <dialog id="records">
   <div class="dialog-head"><div><div class="eyebrow">OPERATOR DOSSIER</div><h2>Mission Records</h2></div><button class="icon-btn" id="close-records" aria-label="Close records">✕</button></div>
